@@ -44,11 +44,3 @@
     justify-content: center;
     gap: 15px;
 }
-
-.canvasWrapper button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 16px;
-    border: 1px solid black;
-    cursor: pointer;
-}
