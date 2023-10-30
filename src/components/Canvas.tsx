@@ -7,6 +7,8 @@ import {
     useGetHyperbolaParams,
     useGetParabolaParams
 } from "../features/app/appSlice"
+import SecondLevelLineParams from "./SecondLevelLineParams"
+import Button from "antd/lib/button"
 
 interface CanvasProps {
     selectedAlgorithm: MenuListType
@@ -57,19 +59,6 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
         }
     }
 
-    const drawLine = () => {
-        if (selectedAlgorithm === "IDA") {
-            // Используйте алгоритм ИДА для рисования отрезка
-            drawLineIDA()
-        } else if (selectedAlgorithm === "Bresenham") {
-            // Используйте алгоритм Брезенхема для рисования отрезка
-            drawLineBresenham()
-        } else if (selectedAlgorithm === "Wu") {
-            // Используйте алгоритм Ву для рисования отрезка
-            drawLineWu()
-        }
-    }
-
     useEffect(() => {
         clearCanvas()
         if (selectedAlgorithm === "Circle" && circleParams) {
@@ -102,8 +91,17 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
                 focusY: focusY,
                 p: p
             })
+        } else if (selectedAlgorithm === "IDA") {
+            // Используйте алгоритм ИДА для рисования отрезка
+            drawLineIDA()
+        } else if (selectedAlgorithm === "Bresenham") {
+            // Используйте алгоритм Брезенхема для рисования отрезка
+            drawLineBresenham()
+        } else if (selectedAlgorithm === "Wu") {
+            // Используйте алгоритм Ву для рисования отрезка
+            drawLineWu()
         }
-    }, [selectedAlgorithm])
+    }, [selectedAlgorithm, circleParams, ellipseParams, hyperbolaParams, parabolaParams])
 
     const drawPixel = (x: number, y: number) => {
         const canvas = canvasRef.current
@@ -325,19 +323,19 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
         }
     }
 
-
     return (
         <div className={styles.canvasWrapper}>
             <canvas
                 className={styles.canvas}
                 ref={canvasRef}
-                width={600}
-                height={400}
+                width={700}
+                height={700}
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
             />
-            <button onClick={clearCanvas}>Clear</button>
+            <SecondLevelLineParams selectedAlgorithm={selectedAlgorithm}/>
+            <Button block type={"dashed"} onClick={clearCanvas}>Clear</Button>
         </div>
     )
 }
