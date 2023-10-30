@@ -1,7 +1,10 @@
 import {configureStore} from "@reduxjs/toolkit"
 import {useDispatch as useStoreDispatch} from "react-redux"
+import appSlice from "./features/app/appSlice"
 
-const reducers = {}
+const reducers = {
+    appSlice
+}
 
 const store = configureStore({
     reducer: reducers

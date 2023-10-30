@@ -1,6 +1,12 @@
 import React, {useEffect, useRef, useState} from "react"
 import styles from "./style.module.css"
 import {MenuListType} from "./Menu"
+import {
+    useGetCircleParams,
+    useGetEllipseParams,
+    useGetHyperbolaParams,
+    useGetParabolaParams
+} from "../features/app/appSlice"
 
 interface CanvasProps {
     selectedAlgorithm: MenuListType
@@ -37,17 +43,11 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
     const [drawing, setDrawing] = useState(false)
     const [startPoint, setStartPoint] = useState({x: 0, y: 0})
     const [endPoint, setEndPoint] = useState({x: 0, y: 0})
-
-    const [centerX, setCenterX] = useState<undefined | number>(undefined)
-    const [centerY, setCenterY] = useState<undefined | number>(undefined)
-    const [radius, setRadius] = useState<undefined | number>(undefined)
-    const [radiusX, setRadiusX] = useState<undefined | number>(undefined)
-    const [radiusY, setRadiusY] = useState<undefined | number>(undefined)
-    const [a, setA] = useState<undefined | number>(undefined)
-    const [b, setB] = useState<undefined | number>(undefined)
-    const [focusX, setFocusX] = useState<undefined | number>(undefined)
-    const [focusY, setFocusY] = useState<undefined | number>(undefined)
-    const [p, setP] = useState<undefined | number>(undefined)
+    // Getting params from store
+    const circleParams = useGetCircleParams()
+    const ellipseParams = useGetEllipseParams()
+    const parabolaParams = useGetParabolaParams()
+    const hyperbolaParams = useGetHyperbolaParams()
 
     const clearCanvas = () => {
         const canvas = canvasRef.current
@@ -72,27 +72,31 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
 
     useEffect(() => {
         clearCanvas()
-        if (selectedAlgorithm === "Circle" && centerX && centerY && radius) {
+        if (selectedAlgorithm === "Circle" && circleParams) {
+            const {centerX, centerY, radius} = circleParams
             drawCircle({
                 centerX: centerX,
                 centerY: centerY,
                 radius: radius
             })
-        } else if (selectedAlgorithm === "Ellipse" && centerX && centerY && radiusX && radiusY) {
+        } else if (selectedAlgorithm === "Ellipse" && ellipseParams) {
+            const {centerX, centerY, radiusX, radiusY} = ellipseParams
             drawEllipse({
                 centerX: centerX,
                 centerY: centerY,
                 radiusX: radiusX,
                 radiusY: radiusY
             })
-        } else if (selectedAlgorithm === "Hyperbola" && centerX && centerY && a && b) {
+        } else if (selectedAlgorithm === "Hyperbola" && hyperbolaParams) {
+            const {centerX, centerY, a, b} = hyperbolaParams
             drawHyperbola({
                 centerX: centerX,
                 centerY: centerY,
                 a: a,
                 b: b
             })
-        } else if (selectedAlgorithm === "Parabola" && focusX && focusY && p) {
+        } else if (selectedAlgorithm === "Parabola" && parabolaParams) {
+            const {focusX, focusY, p} = parabolaParams
             drawParabola({
                 focusX: focusX,
                 focusY: focusY,
