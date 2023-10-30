@@ -1,12 +1,12 @@
 import Canvas from "./components/Canvas"
 import styles from "./components/style.module.css"
-import Menu from "./components/Menu"
+import Menu, {MenuListType} from "./components/Menu"
 import {useState} from "react"
 
 const App = () => {
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState("IDA") // По умолчанию выбран ИДА
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState<MenuListType>("IDA") // По умолчанию выбран ИДА
 
-    const selectAlgorithm = (algorithm: string) => {
+    const selectAlgorithm = (algorithm: MenuListType) => {
         setSelectedAlgorithm(algorithm)
     }
 

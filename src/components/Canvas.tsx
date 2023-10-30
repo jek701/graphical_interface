@@ -1,8 +1,35 @@
-import React, {useRef, useState} from "react"
+import React, {useEffect, useRef, useState} from "react"
 import styles from "./style.module.css"
+import {MenuListType} from "./Menu"
 
 interface CanvasProps {
-    selectedAlgorithm: string
+    selectedAlgorithm: MenuListType
+}
+
+export interface CircleProps {
+    centerX: number,
+    centerY: number,
+    radius: number
+}
+
+export interface EllipseProps {
+    centerX: number,
+    centerY: number,
+    radiusX: number,
+    radiusY: number
+}
+
+export interface HyperbolaProps {
+    centerX: number
+    centerY: number
+    a: number
+    b: number
+}
+
+export interface ParabolaProps {
+    focusX: number
+    focusY: number
+    p: number
 }
 
 const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
@@ -10,6 +37,17 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
     const [drawing, setDrawing] = useState(false)
     const [startPoint, setStartPoint] = useState({x: 0, y: 0})
     const [endPoint, setEndPoint] = useState({x: 0, y: 0})
+
+    const [centerX, setCenterX] = useState<undefined | number>(undefined)
+    const [centerY, setCenterY] = useState<undefined | number>(undefined)
+    const [radius, setRadius] = useState<undefined | number>(undefined)
+    const [radiusX, setRadiusX] = useState<undefined | number>(undefined)
+    const [radiusY, setRadiusY] = useState<undefined | number>(undefined)
+    const [a, setA] = useState<undefined | number>(undefined)
+    const [b, setB] = useState<undefined | number>(undefined)
+    const [focusX, setFocusX] = useState<undefined | number>(undefined)
+    const [focusY, setFocusY] = useState<undefined | number>(undefined)
+    const [p, setP] = useState<undefined | number>(undefined)
 
     const clearCanvas = () => {
         const canvas = canvasRef.current
@@ -31,6 +69,37 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
             drawLineWu()
         }
     }
+
+    useEffect(() => {
+        clearCanvas()
+        if (selectedAlgorithm === "Circle" && centerX && centerY && radius) {
+            drawCircle({
+                centerX: centerX,
+                centerY: centerY,
+                radius: radius
+            })
+        } else if (selectedAlgorithm === "Ellipse" && centerX && centerY && radiusX && radiusY) {
+            drawEllipse({
+                centerX: centerX,
+                centerY: centerY,
+                radiusX: radiusX,
+                radiusY: radiusY
+            })
+        } else if (selectedAlgorithm === "Hyperbola" && centerX && centerY && a && b) {
+            drawHyperbola({
+                centerX: centerX,
+                centerY: centerY,
+                a: a,
+                b: b
+            })
+        } else if (selectedAlgorithm === "Parabola" && focusX && focusY && p) {
+            drawParabola({
+                focusX: focusX,
+                focusY: focusY,
+                p: p
+            })
+        }
+    }, [selectedAlgorithm])
 
     const drawPixel = (x: number, y: number) => {
         const canvas = canvasRef.current
@@ -193,6 +262,65 @@ const Canvas: React.FC<CanvasProps> = ({selectedAlgorithm}) => {
             }
         }
     }
+
+    // 2nd part - Line 2nd level
+
+    const drawCircle = ({centerX, centerY, radius}: CircleProps) => {
+        const canvas = canvasRef.current
+        const ctx = canvas?.getContext("2d")
+
+        if (ctx) {
+            ctx.beginPath()
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+            ctx.stroke()
+        }
+    }
+
+    const drawEllipse = ({centerX, centerY, radiusX, radiusY}: EllipseProps) => {
+        const canvas = canvasRef.current
+        const ctx = canvas?.getContext("2d")
+
+        if (ctx) {
+            ctx.beginPath()
+            ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, 2 * Math.PI)
+            ctx.stroke()
+        }
+    }
+
+    const drawHyperbola = ({centerX, centerY, a, b}: HyperbolaProps) => {
+        const canvas = canvasRef.current
+        const ctx = canvas?.getContext("2d")
+
+        if (ctx) {
+            ctx.beginPath()
+
+            for (let x = centerX - a; x <= centerX + a; x++) {
+                const yPositive = Math.sqrt((x - centerX) ** 2 * (b ** 2) / (a ** 2) - (centerX ** 2))
+                const yNegative = -yPositive
+                ctx.lineTo(x, centerY + yPositive)
+                ctx.lineTo(x, centerY + yNegative)
+            }
+
+            ctx.stroke()
+        }
+    }
+
+    const drawParabola = ({focusX, focusY, p}: ParabolaProps) => {
+        const canvas = canvasRef.current
+        const ctx = canvas?.getContext("2d")
+
+        if (ctx) {
+            ctx.beginPath()
+
+            for (let x = focusX - p; x <= focusX + p; x++) {
+                const y = (x - focusX) ** 2 / (4 * p) + focusY
+                ctx.lineTo(x, y)
+            }
+
+            ctx.stroke()
+        }
+    }
+
 
     return (
         <div className={styles.canvasWrapper}>

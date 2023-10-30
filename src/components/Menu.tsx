@@ -3,9 +3,11 @@ import styles from "../components/style.module.css"
 import cn from "classnames"
 
 interface MenuProps {
-    onSelectAlgorithm: (algorithm: string) => void
+    onSelectAlgorithm: (algorithm: MenuListType) => void
     selectedAlgorithm: string
 }
+
+export type MenuListType = "IDA" | "Bresenham" | "Wu" | "Circle" | "Ellipse" | "Hyperbola" | "Parabola"
 
 const Menu: React.FC<MenuProps> = ({onSelectAlgorithm, selectedAlgorithm}) => {
     return (
@@ -14,6 +16,13 @@ const Menu: React.FC<MenuProps> = ({onSelectAlgorithm, selectedAlgorithm}) => {
                 <li className={cn({[styles.active]: selectedAlgorithm === "IDA"})} onClick={() => onSelectAlgorithm("IDA")}>ИДА</li>
                 <li className={cn({[styles.active]: selectedAlgorithm === "Bresenham"})} onClick={() => onSelectAlgorithm("Bresenham")}>Брезенхем</li>
                 <li className={cn({[styles.active]: selectedAlgorithm === "Wu"})} onClick={() => onSelectAlgorithm("Wu")}>Алгоритм Ву</li>
+            </ul>
+            <p>Линии второго порядка</p>
+            <ul>
+                <li className={cn({[styles.active]: selectedAlgorithm === "Circle"})} onClick={() => onSelectAlgorithm("Circle")}>Окружность</li>
+                <li className={cn({[styles.active]: selectedAlgorithm === "Ellipse"})} onClick={() => onSelectAlgorithm("Ellipse")}>Эллипс</li>
+                <li className={cn({[styles.active]: selectedAlgorithm === "Hyperbola"})} onClick={() => onSelectAlgorithm("Hyperbola")}>Гипербола</li>
+                <li className={cn({[styles.active]: selectedAlgorithm === "Parabola"})} onClick={() => onSelectAlgorithm("Parabola")}>Парабола</li>
             </ul>
         </div>
     )
