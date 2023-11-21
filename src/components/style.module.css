@@ -5,6 +5,19 @@
     display: block;
 }
 
+.threeDContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.threeDViewport {
+    border: 1px solid black;
+    margin-bottom: 10px;
+    border-radius: 24px;
+}
+
 .mainWrapper {
     display: flex;
     flex-direction: row;

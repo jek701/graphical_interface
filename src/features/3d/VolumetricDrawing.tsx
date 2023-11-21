@@ -1,6 +1,10 @@
 import React, {useEffect, useRef, useState} from "react"
 import styles from "../../components/style.module.css"
 import * as THREE from "three"
+import {Col, Form, Row, Space} from "antd"
+import Button from "antd/lib/button"
+import {InputNumber} from "antd/lib"
+import Title from "antd/es/typography/Title"
 
 interface VolumetricDrawingProps {
 
@@ -14,21 +18,20 @@ const VolumetricDrawing: React.FC<VolumetricDrawingProps> = ({}) => {
     const ref = useRef<HTMLDivElement>(null)
     const scene = new THREE.Scene()
 
-    const changeWidth = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setWidth(Number(e.target.value))
-    }
-    const changeHeight = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setHeight(Number(e.target.value))
-    }
-    const changeDepth = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDepth(Number(e.target.value))
-    }
-    const changeCameraZoom = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCameraZoom(Number(e.target.value))
+    const onFormFinish = (values: {
+        width: number,
+        height: number,
+        depth: number,
+        cameraZoom: number
+    }) => {
+        setWidth(values.width)
+        setHeight(values.height)
+        setDepth(values.depth)
+        setCameraZoom(values.cameraZoom)
     }
 
     const renderer = new THREE.WebGLRenderer({alpha: true})
-    renderer.setSize(window.innerWidth * .9, window.innerHeight * .9)
+    renderer.setSize(window.innerWidth * .7, window.innerHeight * .7)
     const camera = new THREE.PerspectiveCamera(cameraZoom, window.innerWidth / window.innerHeight, 1, 100)
     camera.position.z = 5
 
@@ -45,17 +48,17 @@ const VolumetricDrawing: React.FC<VolumetricDrawingProps> = ({}) => {
         const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(512, {
             format: THREE.RGBAFormat,
             generateMipmaps: true,
-            minFilter: THREE.LinearMipmapLinearFilter,
-        });
+            minFilter: THREE.LinearMipmapLinearFilter
+        })
 
-        const cubeCamera = new THREE.CubeCamera(10, 1000, cubeRenderTarget);
-        scene.add(cubeCamera);
+        const cubeCamera = new THREE.CubeCamera(10, 1000, cubeRenderTarget)
+        scene.add(cubeCamera)
 
         // Add wireframe (border) to the object
-        const wireframeGeometry = new THREE.WireframeGeometry(geometry);
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
-        const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
-        cube.add(wireframe);
+        const wireframeGeometry = new THREE.WireframeGeometry(geometry)
+        const wireframeMaterial = new THREE.LineBasicMaterial({color: 0xffffff})
+        const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial)
+        cube.add(wireframe)
 
         if (ref.current) {
             let isMouseDown = false
@@ -70,24 +73,54 @@ const VolumetricDrawing: React.FC<VolumetricDrawingProps> = ({}) => {
                 if (isMouseDown) {
                     cube.rotation.x += e.movementY / 100
                     cube.rotation.y += e.movementX / 100
-                    cubeCamera.update(renderer, scene);
+                    cubeCamera.update(renderer, scene)
                     renderer.render(scene, camera)
                 }
             })
         }
-        cubeCamera.update(renderer, scene);
+        cubeCamera.update(renderer, scene)
         renderer.render(scene, camera)
     }, [width, height, depth, ref, cameraZoom])
 
     return (
-        <div className={styles.container}>
-            <div ref={ref}/>
-            <div className={styles.inputs}>
-                <input type="number" value={width} onChange={changeWidth}/>
-                <input type="number" value={height} onChange={changeHeight}/>
-                <input type="number" value={depth} onChange={changeDepth}/>
-                <input type="number" value={cameraZoom} onChange={changeCameraZoom}/>
-            </div>
+        <div className={styles.threeDContainer}>
+            <div className={styles.threeDViewport} ref={ref}/>
+            <Form
+                onFinish={onFormFinish}
+                initialValues={{
+                    width: 2,
+                    height: 2,
+                    depth: 2,
+                    cameraZoom: 75
+                }}
+            >
+                <Space direction={"vertical"} align={"center"}>
+                    <Title level={4}>Параметры фигуры</Title>
+                    <Row gutter={[10, 10]}>
+                        <Col>
+                            <Form.Item label={"Ширина куба (x)"} name={"width"}>
+                                <InputNumber min={1} placeholder={"Введите ширину куба"}/>
+                            </Form.Item>
+                        </Col>
+                        <Col>
+                            <Form.Item label={"Высота куба (y)"} name={"height"}>
+                                <InputNumber min={1} placeholder={"Введите длину куба"}/>
+                            </Form.Item>
+                        </Col>
+                        <Col>
+                            <Form.Item label={"Глубина куба (z)"} name={"depth"}>
+                                <InputNumber min={1} placeholder={"Введите глубину куба"}/>
+                            </Form.Item>
+                        </Col>
+                        <Col>
+                            <Form.Item label={"Зум камеры (больше - дальше)"} name={"cameraZoom"}>
+                                <InputNumber min={1} placeholder={"Введите зум камеры"}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Button htmlType={"submit"} type={"primary"}>Применить</Button>
+                </Space>
+            </Form>
         </div>
     )
 }
