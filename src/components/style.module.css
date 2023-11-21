@@ -19,6 +19,10 @@
     width: 100%;
 }
 
+.menu p {
+    margin: 25px 0 10px 0;
+}
+
 .menu li {
     width: 100%;
     padding: 5px 12px;
