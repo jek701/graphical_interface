@@ -41,7 +41,6 @@ const VolumetricDrawing: React.FC<VolumetricDrawingProps> = ({}) => {
         const cube = new THREE.Mesh(geometry, material)
         scene.add(cube)
         if (ref.current) {
-            // Not add but update
             ref.current.innerHTML = ""
             ref.current.appendChild(renderer.domElement)
         }
@@ -54,7 +53,6 @@ const VolumetricDrawing: React.FC<VolumetricDrawingProps> = ({}) => {
         const cubeCamera = new THREE.CubeCamera(10, 1000, cubeRenderTarget)
         scene.add(cubeCamera)
 
-        // Add wireframe (border) to the object
         const wireframeGeometry = new THREE.WireframeGeometry(geometry)
         const wireframeMaterial = new THREE.LineBasicMaterial({color: 0xffffff})
         const wireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial)
