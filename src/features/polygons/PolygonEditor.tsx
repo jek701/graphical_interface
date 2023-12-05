@@ -90,44 +90,39 @@ const PolygonEditor: React.FC = () => {
         return hull
     }
 
-    const jarvisMarch = (points: number[][]) => {
-        const n = points.length
-        if (n < 3) return points
-
-        const getNextPoint = (currentPoint: number[]) => {
-            let nextPoint = points[0]
-            for (let i = 1; i < n; i++) {
-                if (
-                    nextPoint === currentPoint ||
-                    (points[i][1] < nextPoint[1] ||
-                        (points[i][1] === nextPoint[1] && points[i][0] < nextPoint[0]))
-                ) {
-                    nextPoint = points[i]
-                }
-            }
-            return nextPoint
-        }
-
-        let hull: number[][] = []
-        let currentPoint = points[0]
-
-        do {
-            hull.push(currentPoint)
-            const nextPoint = getNextPoint(currentPoint)
-            currentPoint = nextPoint
-        } while (currentPoint !== hull[0])
-
-        return hull
-    }
+    // const jarvisMarch = (points: number[][]) => {
+    //     const n = points.length
+    //     if (n < 3) return points
+    //
+    //     const getNextPoint = (currentPoint: number[]) => {
+    //         let nextPoint = points[0]
+    //         for (let i = 1; i < n; i++) {
+    //             if (
+    //                 nextPoint === currentPoint ||
+    //                 (points[i][1] < nextPoint[1] ||
+    //                     (points[i][1] === nextPoint[1] && points[i][0] < nextPoint[0]))
+    //             ) {
+    //                 nextPoint = points[i]
+    //             }
+    //         }
+    //         return nextPoint
+    //     }
+    //
+    //     let hull: number[][] = []
+    //     let currentPoint = points[0]
+    //
+    //     do {
+    //         hull.push(currentPoint)
+    //         const nextPoint = getNextPoint(currentPoint)
+    //         currentPoint = nextPoint
+    //     } while (currentPoint !== hull[0])
+    //
+    //     return hull
+    // }
 
     const handleGrahamScanClick = () => {
         const convexHull = grahamScan(points)
         console.log("Convex Hull (Graham Scan):", convexHull)
-    }
-
-    const handleJarvisMarchClick = () => {
-        const convexHull = jarvisMarch(points)
-        console.log("Convex Hull (Jarvis March):", convexHull)
     }
 
     const handleCheckClick = () => {
@@ -139,8 +134,6 @@ const PolygonEditor: React.FC = () => {
             </>,
             duration: 0
         })
-        console.log("Is Convex:", isConvex(points))
-        console.log("Normals:", findNormals(points))
     }
 
     return (
